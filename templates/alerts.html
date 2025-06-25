@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Alertes Réseau</title>
+    <style>
+        body { font-family: sans-serif; background-color: #fff; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #eee; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        a { text-decoration: none; color: #007BFF; }
+    </style>
+</head>
+<body>
+    <h1>📋 Alertes Réseau</h1>
+    <a href="/">⬅ Retour au tableau de bord</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>IP Source</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alert in alerts %}
+            <tr>
+                <td>{{ alert[0] }}</td>
+                <td>{{ alert[1] }}</td>
+                <td>{{ alert[2] }}</td>
+                <td>{{ alert[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

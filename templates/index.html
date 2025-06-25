@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Détection d'attaques</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f8f8f8; padding: 20px; }
+        h1 { color: #333; }
+        canvas { max-width: 700px; margin: 20px auto; display: block; }
+        a { display: inline-block; margin-top: 10px; color: #007BFF; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Tableau de bord - Attaques détectées</h1>
+    <canvas id="attackChart"></canvas>
+    <a href="/alerts">🔍 Voir toutes les alertes</a>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('/api/data');
+            const data = await response.json();
+            const ctx = document.getElementById('attackChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: 'Nombre d\'attaques',
+                        data: Object.values(data),
+                        backgroundColor: ['#e74c3c', '#f39c12', '#3498db', '#2ecc71']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
