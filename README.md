@@ -47,18 +47,18 @@ L’interface est développée en Flask avec un tableau de bord simple et effica
 ## 🛠️ Installation
 
 1. Cloner le projet
-git clone https://github.com/touilmohcine1/network_guardian.git
-cd network_guardian
+- git clone https://github.com/touilmohcine1/network_guardian.git
+- cd network_guardian
 
 2. Créer un environnement virtuel
-python3 -m venv venv
-source venv/bin/activate
+- python3 -m venv venv
+- source venv/bin/activate
 
 3. Installer les dépendances
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
 4. Lancement de l'application
-python app.py
+- python app.py
 
 ---
 
