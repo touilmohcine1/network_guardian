@@ -41,6 +41,43 @@ L’interface est développée en Flask avec un tableau de bord simple et effica
 - Statistiques en temps réel
 - Page de connexion
 
+
+---
+
+## 🛠️ Installation
+
+1. Cloner le projet
+git clone https://github.com/touilmohcine1/network_guardian.git
+cd network_guardian
+
+2. Créer un environnement virtuel
+python3 -m venv venv
+source venv/bin/activate
+
+3. Installer les dépendances
+pip install -r requirements.txt
+
+4. Lancement de l'application
+python app.py
+
+---
+
+## 📚 Technologies utilisées
+
+- Python3
+
+- Flask
+
+- Scapy
+
+- SQLite3
+
+- Telegram Bot API
+
+- HTML/CSS/JS
+
+- ReportLab (PDF)
+
 ---
 
 ## 📦 Structure du projet
@@ -61,7 +98,6 @@ network_guardian/
 ├── database/              # Gestion de la base de données
 │   └── db.py
 └── requirements.txt       # Dépendances
-
 
 
 
