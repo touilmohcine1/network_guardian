@@ -3,6 +3,11 @@ import sqlite3
 from datetime import datetime
 from collections import defaultdict
 import time
+import logging
+
+# Configure logging to be silent by default
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)  # Only show warnings and errors
 
 DB_PATH = 'database.db'
 ip_counter = defaultdict(int)

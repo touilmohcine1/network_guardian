@@ -1,3 +1,7 @@
 Flask
+Flask-Login
+Werkzeug
 scapy
 requests
+dnspython
+ipaddress

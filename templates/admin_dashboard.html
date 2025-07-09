@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Network Guardian - Dashboard</title>
+    <title>Network Guardian - Admin Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { 
@@ -37,6 +37,14 @@
             font-weight: 500;
         }
         
+        .role-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
         .logout-btn {
             background: rgba(255,255,255,0.2);
             color: white;
@@ -59,7 +67,7 @@
         
         .welcome-message {
             background: white;
-            padding: 1rem;
+            padding: 1.5rem;
             border-radius: 10px;
             margin-bottom: 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -75,34 +83,67 @@
             color: #666;
         }
         
-        canvas { 
-            max-width: 700px; 
-            margin: 20px auto; 
-            display: block;
+        .admin-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-card {
             background: white;
-            padding: 1rem;
+            padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .nav-links {
-            margin-top: 2rem;
             text-align: center;
+            transition: transform 0.2s ease;
         }
         
-        .nav-links a { 
-            display: inline-block; 
-            margin: 0 1rem;
+        .nav-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .nav-card h3 {
+            margin: 0 0 1rem 0;
+            color: #333;
+        }
+        
+        .nav-card p {
+            margin: 0 0 1.5rem 0;
+            color: #666;
+        }
+        
+        .nav-card a {
+            display: inline-block;
             padding: 0.75rem 1.5rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; 
+            color: white;
             text-decoration: none;
             border-radius: 5px;
             transition: transform 0.2s ease;
         }
         
-        .nav-links a:hover {
+        .nav-card a:hover {
             transform: translateY(-2px);
+        }
+        
+        .stats-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .stats-section h3 {
+            margin: 0 0 1.5rem 0;
+            color: #333;
+        }
+        
+        canvas { 
+            max-width: 100%; 
+            margin: 0 auto; 
+            display: block;
         }
         
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -131,9 +172,10 @@
 </head>
 <body>
     <div class="header">
-        <h1>🛡️ Network Guardian</h1>
+        <h1>🛡️ Network Guardian - Admin Panel</h1>
         <div class="user-info">
             <span>Welcome, {{ current_user.username }}!</span>
+            <span class="role-badge">{{ current_user.role }}</span>
             <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
         </div>
     </div>
@@ -152,18 +194,47 @@
         {% endwith %}
         
         <div class="welcome-message">
-            <h2>Network Security Dashboard</h2>
-            <p>Monitor and analyze network attacks in real-time. The system is actively detecting various types of network threats.</p>
+            <h2>Administrator Dashboard</h2>
+            <p>Welcome to the Network Guardian administration panel. You have full access to manage users and monitor network security.</p>
         </div>
         
-        <canvas id="attackChart"></canvas>
+        <div class="admin-nav">
+            <div class="nav-card">
+                <h3>👥 User Management</h3>
+                <p>Create, edit, and delete user accounts. Manage user roles and permissions.</p>
+                <a href="{{ url_for('admin_users') }}">Manage Users</a>
+            </div>
+            
+            <div class="nav-card">
+                <h3>🔍 Network Monitoring</h3>
+                <p>View real-time network alerts and security statistics.</p>
+                <a href="{{ url_for('alerts') }}">View Alerts</a>
+            </div>
+            
+            <div class="nav-card">
+                <h3>📊 Security Analytics</h3>
+                <p>Monitor attack patterns and security metrics in real-time.</p>
+                <a href="#" onclick="showStats()">View Analytics</a>
+            </div>
+        </div>
         
-        <div class="nav-links">
-            <a href="/alerts">🔍 View All Alerts</a>
+        <div class="stats-section" id="stats-section" style="display: none;">
+            <h3>Network Attack Statistics</h3>
+            <canvas id="attackChart"></canvas>
         </div>
     </div>
 
     <script>
+        function showStats() {
+            const statsSection = document.getElementById('stats-section');
+            if (statsSection.style.display === 'none') {
+                statsSection.style.display = 'block';
+                fetchData();
+            } else {
+                statsSection.style.display = 'none';
+            }
+        }
+        
         async function fetchData() {
             try {
                 const response = await fetch('/api/data');
@@ -211,11 +282,6 @@
                 console.error('Error fetching data:', error);
             }
         }
-
-        fetchData();
-        
-        // Refresh data every 30 seconds
-        setInterval(fetchData, 30000);
     </script>
 </body>
-</html>
+</html> 
