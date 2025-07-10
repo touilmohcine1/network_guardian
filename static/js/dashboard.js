@@ -6,11 +6,11 @@ async function fetchDataAndDraw() {
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: Object.keys(data),
+            labels: ['ARP Spoofing'],
             datasets: [{
-                label: 'Nombre d\'attaques',
-                data: Object.values(data),
-                backgroundColor: ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db'],
+                label: 'Nombre d\'attaques ARP',
+                data: [data['ARP'] || 0],
+                backgroundColor: ['#e74c3c'],
                 borderWidth: 1
             }]
         },
@@ -22,7 +22,7 @@ async function fetchDataAndDraw() {
                 },
                 title: {
                     display: true,
-                    text: 'Répartition des attaques détectées'
+                    text: 'Répartition des attaques ARP détectées'
                 }
             }
         }

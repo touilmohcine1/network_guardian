@@ -117,21 +117,6 @@
             color: white;
         }
         
-        .alert-type.dns {
-            background-color: #f39c12;
-            color: white;
-        }
-        
-        .alert-type.ddos {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .alert-type.scan {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
         .no-alerts {
             text-align: center;
             padding: 3rem;
@@ -161,6 +146,19 @@
                 }
             {% endif %}
         {% endwith %}
+        .footer {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    z-index: 100;
+}
     </style>
 </head>
 <body>
@@ -193,33 +191,57 @@
                     <thead>
                         <tr>
                             <th>Timestamp</th>
-                            <th>Attack Type</th>
                             <th>Description</th>
                             <th>Source IP</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for alert in alerts %}
+                        {% if alert[1].lower() == 'arp' %}
                         <tr>
                             <td>{{ alert[0] }}</td>
-                            <td>
-                                <span class="alert-type {{ alert[1].lower() }}">
-                                    {{ alert[1] }}
-                                </span>
-                            </td>
                             <td>{{ alert[2] }}</td>
                             <td><code>{{ alert[3] }}</code></td>
                         </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
                 <div class="no-alerts">
-                    <h3>No alerts detected yet</h3>
-                    <p>The system is monitoring your network. Alerts will appear here when threats are detected.</p>
+                    <h3>No ARP spoofing alerts detected yet</h3>
+                    <p>The system is monitoring your network. ARP spoofing alerts will appear here when threats are detected.</p>
                 </div>
             {% endif %}
         </div>
     </div>
+    <footer class="footer">
+    <span>&copy; 2024 Network Guardian &mdash; Projet PFE, Mohcine Touil</span>
+</footer>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+    const socket = io();
+    socket.on('new_arp_alert', function(alert) {
+        // Find the alerts table body
+        const tbody = document.querySelector('.alerts-table tbody');
+        if (tbody) {
+            // Create a new row for the alert
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${alert.timestamp}</td>
+                <td>${alert.description}</td>
+                <td><code>${alert.source_ip}</code></td>
+            `;
+            // Insert at the top
+            tbody.insertBefore(tr, tbody.firstChild);
+        }
+        // Optionally, show a notification
+        const notif = document.createElement('div');
+        notif.className = 'flash-message success';
+        notif.textContent = 'Nouvelle alerte ARP détectée !';
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 3000);
+    });
+</script>
 </body>
 </html>

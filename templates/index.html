@@ -127,6 +127,19 @@
                 }
             {% endif %}
         {% endwith %}
+        .footer {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -152,8 +165,8 @@
         {% endwith %}
         
         <div class="welcome-message">
-            <h2>Network Security Dashboard</h2>
-            <p>Monitor and analyze network attacks in real-time. The system is actively detecting various types of network threats.</p>
+            <h2>ARP Spoofing Dashboard</h2>
+            <p>Monitor and analyze ARP spoofing attacks in real-time. The system is actively detecting ARP spoofing threats only.</p>
         </div>
         
         <canvas id="attackChart"></canvas>
@@ -162,6 +175,9 @@
             <a href="/alerts">🔍 View All Alerts</a>
         </div>
     </div>
+<footer class="footer">
+    <span>&copy; 2024 Network Guardian &mdash; Projet PFE, Mohcine Touil</span>
+</footer>
 
     <script>
         async function fetchData() {

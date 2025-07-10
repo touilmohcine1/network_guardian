@@ -5,6 +5,7 @@ import time
 from collections import defaultdict
 import threading
 import logging
+from app import broadcast_arp_alert
 
 # Configure logging to be silent by default
 logger = logging.getLogger(__name__)
@@ -54,24 +55,22 @@ class ARPSpoofingDetector:
             self.gateway_ip = None
     
     def insert_alert(self, attack_type, description, source_ip, severity="HIGH"):
-        """Insert alert into database with enhanced information"""
+        """Insert alert into database with enhanced information and broadcast via WebSocket"""
         try:
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            # Enhanced description with more details
             enhanced_desc = f"{description} | Severity: {severity} | Interface: {self.interface or 'Unknown'}"
-            
             cursor.execute(
                 "INSERT INTO alerts (timestamp, attack_type, description, source_ip) VALUES (?, ?, ?, ?)",
                 (timestamp, attack_type, enhanced_desc, source_ip)
             )
             conn.commit()
             conn.close()
-            
             logger.warning(f"ARP Alert: {enhanced_desc}")
-            
+            # Broadcast only ARP-related alerts
+            if attack_type.lower().startswith("arp") or "spoofing" in attack_type.lower() or "mac flooding" in attack_type.lower() or "gateway spoofing" in attack_type.lower():
+                broadcast_arp_alert((timestamp, attack_type, enhanced_desc, source_ip))
         except Exception as e:
             logger.error(f"Error inserting alert: {e}")
     

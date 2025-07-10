@@ -7,6 +7,7 @@ import time
 import os
 import logging
 import sys
+from flask_socketio import SocketIO, emit
 
 # Check for verbose mode argument
 VERBOSE_MODE = '--verbose' in sys.argv or '-v' in sys.argv
@@ -33,9 +34,6 @@ logging.getLogger('scapy.runtime').setLevel(logging.ERROR)
 logging.getLogger('scapy.loading').setLevel(logging.ERROR)
 
 from detector.arp_detector import start_arp_detection
-from detector.dns_detector import start_dns_detection
-from detector.ddos_detector import start_ddos_detection
-from detector.scan_detector import start_scan_detection
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'  # Change this in production!
@@ -341,7 +339,7 @@ def manager_dashboard():
 def alerts():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT timestamp, attack_type, description, source_ip FROM alerts ORDER BY id DESC LIMIT 100")
+    cursor.execute("SELECT timestamp, attack_type, description, source_ip FROM alerts WHERE attack_type = 'ARP' ORDER BY id DESC LIMIT 100")
     rows = cursor.fetchall()
     conn.close()
     return render_template('alerts.html', alerts=rows)
@@ -351,20 +349,27 @@ def alerts():
 def api_data():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT attack_type, COUNT(*) FROM alerts GROUP BY attack_type")
+    cursor.execute("SELECT attack_type, COUNT(*) FROM alerts WHERE attack_type = 'ARP' GROUP BY attack_type")
     data = cursor.fetchall()
     conn.close()
     result = {row[0]: row[1] for row in data}
     return jsonify(result)
 
+def broadcast_arp_alert(alert):
+    # alert: (timestamp, attack_type, description, source_ip)
+    socketio.emit('new_arp_alert', {
+        'timestamp': alert[0],
+        'attack_type': alert[1],
+        'description': alert[2],
+        'source_ip': alert[3]
+    }, broadcast=True)
+
 def run_detectors():
     Thread(target=start_arp_detection, daemon=True).start()
-    Thread(target=start_dns_detection, daemon=True).start()
-    Thread(target=start_ddos_detection, daemon=True).start()
-    Thread(target=start_scan_detection, daemon=True).start()
 
 if __name__ == '__main__':
     init_db()
+    socketio = SocketIO(app)
     run_detectors()
     
     if not VERBOSE_MODE:
@@ -374,4 +379,4 @@ if __name__ == '__main__':
         print("Default admin credentials: admin / admin123")
         print("Press Ctrl+C to stop")
     
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)

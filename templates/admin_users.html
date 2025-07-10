@@ -217,6 +217,19 @@
                 }
             {% endif %}
         {% endwith %}
+        .footer {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -296,5 +309,8 @@
             {% endif %}
         </div>
     </div>
+    <footer class="footer">
+        <span>&copy; 2024 Network Guardian &mdash; Projet PFE, Mohcine Touil</span>
+    </footer>
 </body>
 </html> 
