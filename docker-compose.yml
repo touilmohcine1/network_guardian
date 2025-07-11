@@ -3,8 +3,10 @@ services:
   app:
     build: .
     container_name: network_guardian_app
-    ports:
-      - "5000:5000"
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     volumes:
       - .:/app
     environment:
