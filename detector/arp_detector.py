@@ -208,7 +208,7 @@ class ARPSpoofingDetector:
         
         # Start sniffing
         try:
-            sniff(filter="arp", store=False, prn=self.detect_arp_spoofing)
+            sniff(filter="arp", store=False, prn=self.detect_arp_spoofing, iface=self.interface)
         except Exception as e:
             logger.error(f"Error in ARP sniffing: {e}")
 
