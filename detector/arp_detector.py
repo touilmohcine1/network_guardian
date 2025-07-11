@@ -113,7 +113,7 @@ class ARPSpoofingDetector:
             
             ip = arp_layer.psrc
             mac = arp_layer.hwsrc
-            source_ip = pkt[IP].src if pkt.haslayer(IP) else "Unknown"
+            source_ip = arp_layer.psrc
             
             # Skip if it's a legitimate ARP
             if self.is_legitimate_arp(pkt):

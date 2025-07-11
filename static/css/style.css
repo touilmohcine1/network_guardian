@@ -27,3 +27,17 @@ h1 {
 canvas {
     max-width: 100%;
 }
+
+.flash-message.success {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #27ae60;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    z-index: 9999;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}

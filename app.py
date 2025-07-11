@@ -340,7 +340,7 @@ def manager_dashboard():
 def alerts():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT timestamp, attack_type, description, source_ip FROM alerts WHERE attack_type = 'ARP' ORDER BY id DESC LIMIT 100")
+    cursor.execute("SELECT timestamp, attack_type, description, source_ip FROM alerts WHERE attack_type LIKE '%ARP%' OR attack_type LIKE '%Spoofing%' OR attack_type LIKE '%MAC Flooding%' ORDER BY id DESC LIMIT 100")
     rows = cursor.fetchall()
     conn.close()
     return render_template('alerts.html', alerts=rows)
@@ -350,10 +350,10 @@ def alerts():
 def api_data():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT attack_type, COUNT(*) FROM alerts WHERE attack_type = 'ARP' GROUP BY attack_type")
-    data = cursor.fetchall()
+    cursor.execute("SELECT COUNT(*) FROM alerts WHERE attack_type LIKE '%ARP%' OR attack_type LIKE '%Spoofing%' OR attack_type LIKE '%MAC Flooding%'")
+    count = cursor.fetchone()[0]
     conn.close()
-    result = {row[0]: row[1] for row in data}
+    result = {'ARP': count}
     return jsonify(result)
 
 def run_detectors():
