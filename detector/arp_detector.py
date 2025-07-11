@@ -55,7 +55,8 @@ class ARPSpoofingDetector:
             self.gateway_ip = None
     
     def insert_alert(self, attack_type, description, source_ip, severity="HIGH"):
-        """Insert alert into database with enhanced information and broadcast via WebSocket"""
+        print(f"[DEBUG] insert_alert called: {attack_type}, {description}, {source_ip}, {severity}")
+        logger.warning(f"[DEBUG] insert_alert called: {attack_type}, {description}, {source_ip}, {severity}")
         try:
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
@@ -68,11 +69,13 @@ class ARPSpoofingDetector:
             conn.commit()
             conn.close()
             logger.warning(f"ARP Alert: {enhanced_desc}")
+            print(f"[DEBUG] Alert inserted in DB: {timestamp}, {attack_type}, {enhanced_desc}, {source_ip}")
             # Broadcast only ARP-related alerts
             if attack_type.lower().startswith("arp") or "spoofing" in attack_type.lower() or "mac flooding" in attack_type.lower() or "gateway spoofing" in attack_type.lower():
                 broadcast_arp_alert((timestamp, attack_type, enhanced_desc, source_ip))
         except Exception as e:
             logger.error(f"Error inserting alert: {e}")
+            print(f"[ERROR] Error inserting alert: {e}")
     
     def is_legitimate_arp(self, pkt):
         """Check if ARP packet is legitimate"""
@@ -96,6 +99,7 @@ class ARPSpoofingDetector:
             return True
     
     def detect_arp_spoofing(self, pkt):
+        print("[DEBUG] detect_arp_spoofing called")
         """Enhanced ARP spoofing detection"""
         try:
             if not pkt.haslayer(ARP):
@@ -131,7 +135,7 @@ class ARPSpoofingDetector:
                             
                             desc = f"ARP Spoofing detected: {ip} MAC changed from {self.arp_table[ip]} to {mac}"
                             severity = "CRITICAL" if ip == self.gateway_ip else "HIGH"
-                            
+                            print(f"[DEBUG] ARP Spoofing detected: {desc}")
                             self.insert_alert("ARP Spoofing", desc, source_ip, severity)
                             self.alert_cooldown[ip] = current_time
                             
@@ -150,6 +154,7 @@ class ARPSpoofingDetector:
             
         except Exception as e:
             logger.error(f"Error in ARP detection: {e}")
+            print(f"[ERROR] Error in ARP detection: {e}")
     
     def _check_suspicious_patterns(self, ip, mac, source_ip):
         """Check for additional suspicious patterns"""
