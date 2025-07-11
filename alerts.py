@@ -14,4 +14,4 @@ def broadcast_arp_alert(alert):
             'attack_type': alert[1],
             'description': alert[2],
             'source_ip': alert[3]
-        }, broadcast=True) 
+        }) 
