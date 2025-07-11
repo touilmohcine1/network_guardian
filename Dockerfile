@@ -8,6 +8,9 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install iproute2 for 'ip' command
+RUN apt-get update && apt-get install -y iproute2
+
 # Copy the rest of the application
 COPY . .
 
