@@ -8,6 +8,7 @@ import os
 import logging
 import sys
 from flask_socketio import SocketIO, emit
+from alerts import broadcast_arp_alert, init_socketio
 
 # Check for verbose mode argument
 VERBOSE_MODE = '--verbose' in sys.argv or '-v' in sys.argv
@@ -355,21 +356,13 @@ def api_data():
     result = {row[0]: row[1] for row in data}
     return jsonify(result)
 
-def broadcast_arp_alert(alert):
-    # alert: (timestamp, attack_type, description, source_ip)
-    socketio.emit('new_arp_alert', {
-        'timestamp': alert[0],
-        'attack_type': alert[1],
-        'description': alert[2],
-        'source_ip': alert[3]
-    }, broadcast=True)
-
 def run_detectors():
     Thread(target=start_arp_detection, daemon=True).start()
 
 if __name__ == '__main__':
     init_db()
     socketio = SocketIO(app)
+    init_socketio(socketio)
     run_detectors()
     
     if not VERBOSE_MODE:

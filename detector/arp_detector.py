@@ -5,7 +5,7 @@ import time
 from collections import defaultdict
 import threading
 import logging
-from app import broadcast_arp_alert
+from alerts import broadcast_arp_alert
 
 # Configure logging to be silent by default
 logger = logging.getLogger(__name__)

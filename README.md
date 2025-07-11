@@ -166,6 +166,27 @@ python app.py -v
 
 ---
 
+## 🚀 Déploiement rapide avec Docker
+
+1. **Construire l'image Docker**
+   ```bash
+   docker build -t network_guardian .
+   ```
+2. **Lancer le conteneur**
+   ```bash
+   docker run --rm -it -p 5000:5000 --name network_guardian_app network_guardian
+   ```
+
+**Ou avec Docker Compose :**
+
+```bash
+docker-compose up --build
+```
+
+L'application sera accessible sur [http://localhost:5000](http://localhost:5000)
+
+---
+
 ## 👥 Gestion des Utilisateurs
 
 ### Utilisation du script de gestion :
