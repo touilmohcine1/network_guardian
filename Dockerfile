@@ -5,7 +5,7 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y iproute2 tcpdump libpcap-dev
+RUN apt-get update && apt-get install -y iproute2 tcpdump libpcap-dev libpcap0.8
 
 # Copy requirements and install dependencies
 COPY requirements.txt ./
