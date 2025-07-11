@@ -222,20 +222,39 @@
 <script>
     const socket = io();
     socket.on('new_arp_alert', function(alert) {
-        // Find the alerts table body
-        const tbody = document.querySelector('.alerts-table tbody');
-        if (tbody) {
-            // Create a new row for the alert
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${alert.timestamp}</td>
-                <td>${alert.description}</td>
-                <td><code>${alert.source_ip}</code></td>
+        // Vérifie si le tableau existe, sinon le créer
+        let alertsTable = document.querySelector('.alerts-table table');
+        let noAlertsDiv = document.querySelector('.no-alerts');
+        if (!alertsTable) {
+            // Supprime le message "no alerts"
+            if (noAlertsDiv) noAlertsDiv.remove();
+            // Crée le tableau
+            const div = document.querySelector('.alerts-table');
+            div.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Description</th>
+                            <th>Source IP</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             `;
-            // Insert at the top
-            tbody.insertBefore(tr, tbody.firstChild);
+            alertsTable = div.querySelector('table');
         }
-        // Optionally, show a notification
+        // Ajoute la nouvelle alerte
+        const tbody = alertsTable.querySelector('tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${alert.timestamp}</td>
+            <td>${alert.description}</td>
+            <td><code>${alert.source_ip}</code></td>
+        `;
+        tbody.insertBefore(tr, tbody.firstChild);
+
+        // Affiche la notification
         const notif = document.createElement('div');
         notif.className = 'flash-message success';
         notif.textContent = 'Nouvelle alerte ARP détectée !';
